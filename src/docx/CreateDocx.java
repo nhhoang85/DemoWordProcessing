@@ -18,7 +18,7 @@ public class CreateDocx {
 
     public void CreateOneTable() {
         int numRow = 3; //Tháng/năm, Nghạch/bậc, Hệ số lương
-        int numCol = 29; //all DataRow from DB
+        int numCol = 45; //all DataRow from DB
         int maxCol = 9; // max number of columns that fit page 
 
         try {
@@ -64,27 +64,30 @@ public class CreateDocx {
                 set = set + 1;
                 numCol -= maxCol;
             }
+            
             //write last set
-            for (int rowIndex = 0 + set * numRow; rowIndex < numRow + set * numRow; rowIndex++) {
-                XWPFTableRow row = new_table.getRow(rowIndex);
-                if (row == null) {
-                    row = new_table.createRow();
-                }
-                for (int colIndex = 0; colIndex <= numCol; colIndex++) {
-                    XWPFTableCell cell = row.getCell(colIndex);
-                    if (cell == null) {
-                        cell = row.createCell();
+            if (numCol % maxCol != 0) {
+                for (int rowIndex = 0 + set * numRow; rowIndex < numRow + set * numRow; rowIndex++) {
+                    XWPFTableRow row = new_table.getRow(rowIndex);
+                    if (row == null) {
+                        row = new_table.createRow();
                     }
+                    for (int colIndex = 0; colIndex <= numCol; colIndex++) {
+                        XWPFTableCell cell = row.getCell(colIndex);
+                        if (cell == null) {
+                            cell = row.createCell();
+                        }
 
-                    if ((rowIndex == 0 + set * numRow) && (colIndex == 0)) {
-                        cell.setText("Tháng/năm");
-                    } else if ((rowIndex == 1 + set * numRow) && (colIndex == 0)) {
-                        cell.setText("Ngạch/bậc");
-                    } else if ((rowIndex == 2 + set * numRow) && (colIndex == 0)) {
-                        cell.setText("Hệ số lương");
-                    } else {
-                        //set Data here
-                        cell.setText(String.format("data %d", set * maxCol + colIndex - 1));
+                        if ((rowIndex == 0 + set * numRow) && (colIndex == 0)) {
+                            cell.setText("Tháng/năm");
+                        } else if ((rowIndex == 1 + set * numRow) && (colIndex == 0)) {
+                            cell.setText("Ngạch/bậc");
+                        } else if ((rowIndex == 2 + set * numRow) && (colIndex == 0)) {
+                            cell.setText("Hệ số lương");
+                        } else {
+                            //set Data here
+                            cell.setText(String.format("data %d", set * maxCol + colIndex - 1));
+                        }
                     }
                 }
             }
@@ -103,7 +106,7 @@ public class CreateDocx {
 
     public void CreateMultiTable() {
         int numRow = 3; //Tháng/năm, Nghạch/bậc, Hệ số lương
-        int numCol = 29; //all DataRow from DB
+        int numCol = 45; //all DataRow from DB
         int maxCol = 9; // max number of columns that fit page 
 
         try {
@@ -145,45 +148,47 @@ public class CreateDocx {
 
                     }
                 }
-                    
+
                 //move cursor to the end of the table 
                 cursor.toEndToken();
                 while (cursor.hasNextToken() && cursor.toNextToken() != org.apache.xmlbeans.XmlCursor.TokenType.START);
-                
+
                 //add break line
                 XWPFParagraph newParagraph = doc.insertNewParagraph(cursor);
                 XWPFRun run = newParagraph.createRun();
                 run.addBreak();
                 cursor.toEndToken();
                 while (cursor.hasNextToken() && cursor.toNextToken() != org.apache.xmlbeans.XmlCursor.TokenType.START);
-                
+
                 set = set + 1;
                 numCol -= maxCol;
             }
 
-            //last table
-            XWPFTable new_table = doc.insertNewTbl(cursor); //insert new table
-            //new_table.setWidth("100%");
-            for (int rowIndex = 0; rowIndex < numRow; rowIndex++) {
-                XWPFTableRow row = new_table.getRow(rowIndex);
-                if (row == null) {
-                    row = new_table.createRow();
-                }
-                for (int colIndex = 0; colIndex <= numCol; colIndex++) {
-                    XWPFTableCell cell = row.getCell(colIndex);
-                    if (cell == null) {
-                        cell = row.createCell();
+            if (numCol % maxCol != 0) {
+                //last table
+                XWPFTable new_table = doc.insertNewTbl(cursor); //insert new table
+                //new_table.setWidth("100%");
+                for (int rowIndex = 0; rowIndex < numRow; rowIndex++) {
+                    XWPFTableRow row = new_table.getRow(rowIndex);
+                    if (row == null) {
+                        row = new_table.createRow();
                     }
+                    for (int colIndex = 0; colIndex <= numCol; colIndex++) {
+                        XWPFTableCell cell = row.getCell(colIndex);
+                        if (cell == null) {
+                            cell = row.createCell();
+                        }
 
-                    if ((rowIndex == 0) && (colIndex == 0)) {
-                        cell.setText("Tháng/năm");
-                    } else if ((rowIndex == 1) && (colIndex == 0)) {
-                        cell.setText("Ngạch/bậc");
-                    } else if ((rowIndex == 2) && (colIndex == 0)) {
-                        cell.setText("Hệ số lương");
-                    } else {
-                        //set Data here
-                        cell.setText(String.format("data %d", set * maxCol + colIndex - 1));
+                        if ((rowIndex == 0) && (colIndex == 0)) {
+                            cell.setText("Tháng/năm");
+                        } else if ((rowIndex == 1) && (colIndex == 0)) {
+                            cell.setText("Ngạch/bậc");
+                        } else if ((rowIndex == 2) && (colIndex == 0)) {
+                            cell.setText("Hệ số lương");
+                        } else {
+                            //set Data here
+                            cell.setText(String.format("data %d", set * maxCol + colIndex - 1));
+                        }
                     }
                 }
             }
